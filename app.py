@@ -14,17 +14,19 @@ prompt = f"Explain what is {topic} in simple words for a beginner. Write 5 simpl
 
 result = generator(
     prompt,
-    max_length = 200,
-    min_length = 50,
+    max_length = 1000,
+    min_length = 100,
     do_sample = True,
     truncation = True
     )
 
 
-output = result[0]["generated_text"]
-sentences = re.findall(r'[^.!?]+[.!?]',output)
+# output = result[0]["generated_text"]
+# sentences = re.findall(r'[^.!?]+[.!?]',output)
 
-print("\nGenerted Output:\n")
+# print("\nGenerted Output:\n")
 
-for line in sentences:
-   print(line.strip())
+# for line in sentences:
+#    print(line.strip())
+
+print(result[0]["generated_text"])
