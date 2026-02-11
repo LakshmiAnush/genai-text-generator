@@ -43,9 +43,11 @@ def clean_output(text):
         r"(?i)^provide.*",
         r"(?i)^write.*",
         # r"(?i)^do not.*",
-        # r"(?i)^only.*",
+        r"(?i)^here are.*",
         r"(?i)^answer.*",
         r"(?i)^explain.*",
+        r"(?i)^what is.*",
+        r".*\?\s*$",
         r"\*{2,}",
         r"-{2,}",
         r"^\s*-\s*",
@@ -57,8 +59,10 @@ def clean_output(text):
     return text.strip()
 
     # Remove duplicate paragraphs
-    paragraphs = list(dict.fromkeys([p.strip() for p in text.split('\n') if p.strip()]))
-    return ' '.join(paragraphs)
+    paragraphs = [p.strip() for p in text.split("\n") if p.strip()]
+    unique_paragraphs = list(dict.fromkeys(paragraphs))
+
+    return "\n".join(unique_paragraphs).strip()
 
 # -------------------------------
 # Initialize session state
@@ -102,9 +106,10 @@ if submit_button:
                     result = generator(
                         prompt,
                         max_new_tokens=300,
-                        temperature=0.8,
+                        temperature=0.7,
                         top_p=0.9,
                         do_sample=True,
+                        repetition_penalty = 1.2,
                         return_full_text=False
                     )
                 else:
