@@ -48,6 +48,8 @@ def clean_output(text):
         r"(?i)^answer.*",
         r"(?i)^explain.*",
         r"(?i)^what is.*",
+        r"(?i)^the answer should.*",
+        r"(?i)^answer the following.*",
         r".*\?\s*$",
         r"\*{2,}",
         r"-{2,}",
@@ -57,7 +59,6 @@ def clean_output(text):
     ]
     for pattern in patterns:
         text = re.sub(pattern, "", text, flags=re.MULTILINE)
-    return text.strip()
 
     # Remove duplicate paragraphs
     paragraphs = [p.strip() for p in text.split("\n") if p.strip()]
