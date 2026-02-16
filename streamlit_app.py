@@ -50,8 +50,12 @@ def clean_output(text):
         r"(?i)^explain.*",
         r"(?i)^rewrite.*",
         r"(?i)^what is.*",
+        r"(?i)^explain how.*",
+        r"(?i)^describe.*",
         r"(?i)^the answer should.*",
         r"(?i)^answer the following.*",
+        r"(?i)^now I will write my answer.*",
+        r"(?i)^start with an introduction.*",
         r".*\?\s*$",
         r"\*{2,}",
         r"-{2,}",
@@ -67,38 +71,69 @@ def clean_output(text):
     unique_paragraphs = list(dict.fromkeys(paragraphs))
 
     return "\n".join(unique_paragraphs).strip()
+# -------------------------------
+# Clear all
+# -------------------------------
+
+def clear_all():
+    st.session_state.topic_input = ""
+    st.session_state.generated_text = ""
+    st.session_state.topic_history = []
+
+
 
 # -------------------------------
 # Initialize session state
 # -------------------------------
 if "topic_input" not in st.session_state:
     st.session_state.topic_input = ""
+if "generated_text" not in st.session_state:
+    st.session_state.generated_text = ""
+if "topic_history" not in st.session_state:
+    st.session_state.topic_history = []
+
+# -------------------------------
+# Topic History
+# -------------------------------
+
+if st.session_state.topic_history:
+    st.subheader("🕘 Topic History")
+    for past_topic in reversed(st.session_state.topic_history):
+        if st.button(past_topic):
+            st.session_state.topic_input = past_topic
+            st.rerun()
 
 
 # -------------------------------
 # User Input Form
 # -------------------------------
 with st.form(key="topic_form"):
-    st.session_state.topic_input = st.text_input("Enter a topic:")
+    st.text_input("Enter a topic:", key="topic_input")
 
-    col1, col2, col3 = st.columns([1, 1, 1])
+    col1, col2 = st.columns([6, 1])
     with col1:
         submit_button = st.form_submit_button("Generate Explanation")
-    with col3:
-        clear_button = st.form_submit_button("Clear Explanation")
+    with col2:
+        clear_button = st.form_submit_button("Clear", on_click=clear_all)
+
+
 
 # -------------------------------
 # Clear Topic
 # -------------------------------
-if clear_button:
-    st.session_state.topic_input = ""
-    st.stop()  # Rerun app to clear input box
+# if clear_button:
+#     st.session_state.topic_input = ""
+#     st.session_state.generated_text = ""
+#     st.rerun()  # Rerun app to clear input box
 
 # -------------------------------
 # Generate Explanation
 # -------------------------------
 if submit_button:
     topic = st.session_state.topic_input.strip()
+    if topic not in st.session_state.topic_history:
+        st.session_state.topic_history.append(topic)
+
     if not topic:
         st.warning("Please enter a topic.")
     else:
@@ -122,10 +157,11 @@ if submit_button:
                         max_length=400
                     )
 
-                output_text = clean_output(result[0]["generated_text"])
+                st.session_state.generated_text = clean_output(result[0]["generated_text"])
+
 
                 # Retry if output too short
-                if len(output_text.split()) < 25 and model_type == "granite":
+                if len(st.session_state.generated_text.split()) < 25 and model_type == "granite":
                     retry = generator(
                         prompt,
                         max_new_tokens=300,
@@ -133,7 +169,7 @@ if submit_button:
                         do_sample=True,
                         return_full_text=False
                     )
-                    output_text = clean_output(retry[0]["generated_text"])
+                    st.session_state.generated_text = clean_output(retry[0]["generated_text"])
 
             except Exception as e:
                 st.error("Model failed to generate response.")
@@ -143,9 +179,9 @@ if submit_button:
         # Display output
         # -------------------------------
         st.subheader("📘 Generated Explanation")
-        if output_text:
-            sentences = re.split(r'(?<=[.!?])\s+', output_text)
+        if st.session_state.generated_text:
+            sentences = re.split(r'(?<=[.!?])\s+', st.session_state.generated_text)
             for sentence in sentences:
                 st.write(sentence.strip())
         else:
-            st.write("No explanation generated. Try a different topic.")
+            st.write("No explanation generated. Try a different topic.") 
