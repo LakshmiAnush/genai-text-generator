@@ -70,3 +70,60 @@ cd <repository-folder>
 
 ## 📚 **Status**
 Beginner project – Created as part of learning and experimenting with Generative AI concepts.
+
+
+## ✨ Project Improvements – Version 2.0
+
+I enhanced the original Topic Explainer app with improved state management and UI features.
+
+### 🔄 Added Features
+
+- ✅ Topic history tracking using Streamlit session_state
+- ✅ Clickable previous topics
+- ✅ Clear All functionality (input, explanation, history reset)
+- ✅ Improved model fallback handling (IBM Granite → FLAN-T5)
+- ✅ Enhanced text cleaning using regex
+- ✅ Retry mechanism for short AI outputs
+- ✅ Improved UI layout using responsive column ratios
+
+### 🧠 Technical Concepts Demonstrated
+
+- Stateful UI management in Streamlit
+- Callback functions using `on_click`
+- Model caching using `@st.cache_resource`
+- Text generation with Hugging Face Transformers
+- Prompt engineering techniques
+- Sampling parameter tuning (temperature, top_p)
+
+This update improves both user experience and application reliability.
+
+
+### 📸 Screenshots
+
+#### 🏠 Main Interface
+![Main Interface](Streamlit - 1.png)
+
+#### 🕘 Topic History Feature
+![Topic History](Streamlit - 3.png)
+
+#### 📘 Generated Output Example
+![Generated Output](Streamlit - 8.png)
+
+### 🧹 Clear Functionality (Reset State)
+![Clear Feature](Streamlit - 9.png)
+
+## 🎥 Project Demo
+
+A short walkthrough demonstrating:
+
+- Topic input
+- AI-generated explanations
+- Topic history tracking
+- Clickable topic recall
+- Clear (session reset) functionality
+- Model fallback system
+
+▶️ Watch the demo below:
+🔗 [Project Demo Video] (https://github.com/user-attachments/assets/4d2f4307-fa1c-4613-a033-ef097aac959d)
+
+
